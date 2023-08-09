@@ -6,5 +6,26 @@ pipeline{
                 bat "echo steps"
             }
         }
+        stage("publish to artifactory"){
+            steps{
+                rtMavenDeployer{
+                    id: 'deployer',
+                    serverId: 'jfroginstance',
+                    releaseRepo:'latest-libs-release-local',
+                    snapShotRepo:'latest-libs-snapshot-local'
+                }
+                rtMavenRun{
+                    pom:'pom.xml',
+                    goals:'clean install',
+                    deployerId:'deployer'
+                }
+                rtPublishBuildInfo{
+                    serverId: 'jfroginstance'
+                }
+
+                
+
+            }
+        }
     }
 }
